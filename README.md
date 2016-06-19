@@ -6,13 +6,11 @@ Maybe it's useful for attaching just audio to your **tweet** :wink: (We cannot a
 ## Requirements
 
 * ffmpeg (with toolchain)
-* jq
 * imagemagick
 
 ```sh
 # e.g. for Mac.
 $ brew install ffmpeg --with-tools
-$ brew install jq
 $ brew install imagemagick
 ```
 

@@ -8,12 +8,12 @@ EOS
 }
 
 # ensure that there are all required commands.
-for CMD in ffmpeg ffprobe jq convert
+for CMD in ffmpeg ffprobe convert
 do
     type $CMD >/dev/null 2>&1
     if [ $? -ne 0 ]; then
         echo "command not found: $CMD
-please ensure that ffmpeg (with toolchain), jq and imagemagick are installed."
+please ensure that ffmpeg (with toolchain) and imagemagick are installed."
     fi
 done
 
@@ -30,19 +30,17 @@ if [ $# -ge 4 ]; then RESOLUTION=$4; fi
 if [ $# -ge 5 ]; then FPS=$5; fi
 
 # get the duration of the input audio.
-AUDIO_DURATION=`ffprobe -show_streams -print_format json $1 2>/dev/null | jq ".streams[0].duration" | cut -d '"' -f2`
-
-# round the duration to integer.
-AUDIO_DURATION_INT=`echo $AUDIO_DURATION | sed -E "s/\.[0-9]+$//g"`
+AUDIO_DURATION=`ffprobe -hide_banner -show_entries format=duration $1 2>/dev/null | grep duration= | sed -E "s/duration=([0-9.]+).*/\1/g"`
 
 # get the required number of images.
-IMAGE_COUNT=`expr $AUDIO_DURATION_INT \* $FPS`
+FRAME_NUM=`echo "$AUDIO_DURATION * $FPS" | bc`
+FRAME_NUM=`echo $FRAME_NUM | sed -E "s/\.[0-9]+$//g"` # round.
 
 # create blank images.
 TMP_DIR_NAME=~/tmp/audio2movie_`date +%s`
 mkdir $TMP_DIR_NAME && cd $_
 convert -size $RESOLUTION xc:$BG_COLOR origin.jpg
-for i in `seq -f %06g 1 $IMAGE_COUNT`
+for i in `seq -f %06g 1 $FRAME_NUM`
 do
     cp origin.jpg $i.jpg
 done
