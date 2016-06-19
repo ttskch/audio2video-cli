@@ -37,8 +37,8 @@ FRAME_NUM=`echo "$AUDIO_DURATION * $FPS" | bc`
 FRAME_NUM=`echo $FRAME_NUM | sed -E "s/\.[0-9]+$//g"` # round.
 
 # create blank images.
-TMP_DIR_NAME=~/tmp/audio2movie_`date +%s`
-mkdir $TMP_DIR_NAME && cd $_
+TMP_DIR_PATH=~/tmp/audio2movie_`date +%s`
+mkdir $TMP_DIR_PATH && cd $_
 convert -size $RESOLUTION xc:$BG_COLOR origin.jpg
 for i in `seq -f %06g 1 $FRAME_NUM`
 do
@@ -47,6 +47,6 @@ done
 cd -
 
 OUTFILE_NAME=`echo $1 | sed -E "s/\.[^.]+$/.$OUTFILE_EXT/"`
-ffmpeg -r 30 -i $TMP_DIR_NAME/%06d.jpg -i $1 -r 30 -vcodec libx264 -pix_fmt yuv420p $OUTFILE_NAME
+ffmpeg -r 30 -i $TMP_DIR_PATH/%06d.jpg -i $1 -r 30 -vcodec libx264 -pix_fmt yuv420p $OUTFILE_NAME
 
-rm -rf $TMP_DIR_NAME
+rm -rf $TMP_DIR_PATH
