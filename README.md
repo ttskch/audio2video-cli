@@ -1,4 +1,4 @@
-# audio2movie
+# audio2movie-cli
 
 Convert an audio file to a simple color movie file.  
 Maybe it's useful for attaching just audio to your **tweet** :wink: (We cannot attach audio file but can do movie file.)
