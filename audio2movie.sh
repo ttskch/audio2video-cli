@@ -30,7 +30,7 @@ if [ $# -ge 4 ]; then RESOLUTION=$4; fi
 if [ $# -ge 5 ]; then FPS=$5; fi
 
 # get the duration of the input audio.
-AUDIO_DURATION=`ffprobe -hide_banner -show_entries format=duration $1 2>/dev/null | grep duration= | sed -E "s/duration=([0-9.]+).*/\1/g"`
+AUDIO_DURATION=`ffprobe -hide_banner -show_entries format=duration "$INFILE_NAME" 2>/dev/null | grep duration= | sed -E "s/duration=([0-9.]+).*/\1/g"`
 
 # get the required number of images.
 FRAME_NUM=`echo "$AUDIO_DURATION * $FPS" | bc`
@@ -46,7 +46,7 @@ do
 done
 cd -
 
-OUTFILE_NAME=`echo $1 | sed -E "s/\.[^.]+$/.$OUTFILE_EXT/"`
-ffmpeg -r 30 -i $TMP_DIR_PATH/%06d.jpg -i $1 -r 30 -vcodec libx264 -pix_fmt yuv420p $OUTFILE_NAME
+OUTFILE_NAME=`echo "$INFILE_NAME" | sed -E "s/\.[^.]+$/.$OUTFILE_EXT/"`
+ffmpeg -r 30 -i $TMP_DIR_PATH/%06d.jpg -i "$INFILE_NAME" -r 30 -vcodec libx264 -pix_fmt yuv420p "$OUTFILE_NAME"
 
 rm -rf $TMP_DIR_PATH
