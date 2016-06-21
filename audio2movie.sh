@@ -3,7 +3,7 @@
 # usage.
 function usage() {
     cat <<EOS
-Usage: sh $0 infile [outfile_ext (default: "mp4")] [bg_color (default: "black")] [resolution (default: "1024x576")] [fps (default: 30)]
+Usage: sh $0 infile [outfile_ext (default: "mp4")] [bg_color (default: "black")] [resolution (default: "1600x900")] [fps (default: 30)]
 EOS
 }
 
@@ -20,7 +20,7 @@ done
 # init parameters.
 OUTFILE_EXT="mp4"
 BG_COLOR="black"
-RESOLUTION="1024x576"
+RESOLUTION="1600x900"
 FPS="30"
 if [ $# -eq 0 ]; then usage && exit 0; fi
 if [ $# -ge 1 ]; then INFILE_NAME=$1; fi
