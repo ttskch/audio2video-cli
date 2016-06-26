@@ -14,11 +14,25 @@ $ brew install ffmpeg --with-tools
 $ brew install imagemagick
 ```
 
+```sh
+# e.g. for Ubuntu 16.04.
+$ apt-get install -y ffmpeg libavcodec-extra imagemagick
+```
+
+## Installation
+
+```sh
+$ git clone git@github.com:ttskch/audio2video-cli.git
+$ cd audio2video-cli
+$ chmod u+x audio2video.sh
+$ ln -s $(pwd)/audio2video.sh /usr/local/bin/a2v
+```
+
 ## Usage
 
 ```sh
-$ sh audio2video.sh
-Usage: sh audio2movie.sh infile [outfile_ext (default: "mp4")] [bg_color (default: "black")] [resolution (default: "1024x576")] [fps (default: 30)]
+$ a2v
+Usage: a2v infile [outfile_ext (default: "mp4")] [bg_color (default: "black")] [resolution (default: "1024x576")] [fps (default: 30)]
 ```
 
 ### Examples
