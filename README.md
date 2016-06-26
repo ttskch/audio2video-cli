@@ -24,7 +24,6 @@ $ apt-get install -y ffmpeg libavcodec-extra imagemagick
 ```sh
 $ git clone git@github.com:ttskch/audio2video-cli.git
 $ cd audio2video-cli
-$ chmod u+x audio2video.sh
 $ ln -s $(pwd)/audio2video.sh /usr/local/bin/a2v
 ```
 
@@ -32,7 +31,7 @@ $ ln -s $(pwd)/audio2video.sh /usr/local/bin/a2v
 
 ```sh
 $ a2v
-Usage: a2v infile [outfile_ext (default: "mp4")] [bg_color (default: "black")] [resolution (default: "1024x576")] [fps (default: 30)]
+Usage: /usr/local/bin/a2v infile [outfile_ext (default: "mp4")] [bg_color (default: "black")] [resolution (default: "1024x576")] [fps (default: 30)]
 ```
 
 ### Examples
