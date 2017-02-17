@@ -1,33 +1,44 @@
 # audio2video-cli
 
-A CLI tool to convert an audio file to a simple video file.  
+A CLI tool to convert an audio file to a simple video file.
 Maybe it's useful for attaching just audio to your tweet. (We cannot attach audio file but can do video file.)
-
-## Requirements
-
-* PHP 5.4+
-* ffmpeg (with toolchain)
-* imagemagick
-* php-imagick
-
-```sh
-# e.g. for Mac.
-$ brew tap homebrew/php
-$ brew install ffmpeg --with-tools
-$ brew install php71 imagemagick php71-imagick
-
-# e.g. for Ubuntu 16.04.
-$ apt-get install -y php ffmpeg libavcodec-extra imagemagick php-imagick
-```
 
 ## Installation
 
+### Homebrew
+
 ```sh
-$ git clone git@github.com:ttskch/audio2video-cli.git
-$ cd audio2video-cli
-$ composer install
-$ ln -s $(pwd)/audio2video /usr/local/bin/
+$ brew tap ttskch/audio2video
+$ brew install audio2video
 ```
+
+> ### Manual
+>
+> The following are require.
+>
+> * PHP 5.4+
+> * ffmpeg (with toolchain)
+> * imagemagick
+> * php-imagick
+>
+> ```sh
+> # e.g. for macOS
+> $ brew tap homebrew/php
+> $ brew install ffmpeg --with-tools
+> $ brew install php71 imagemagick php71-imagick
+>
+> # e.g. for Ubuntu
+> $ apt-get install -y php ffmpeg libavcodec-extra imagemagick php-imagick
+> ```
+>
+> Then you can install me.
+>
+> ```sh
+> $ git clone git@github.com:ttskch/audio2video-cli.git
+> $ cd audio2video-cli
+> $ composer install
+> $ ln -s $(pwd)/audio2video /usr/local/bin/
+> ```
 
 ## Usage
 
@@ -86,7 +97,7 @@ Then you get mp4 file like below:
 
 ## See also
 
-This feature **as a service** is here:
+This feature as a service is here:
 
 * http://audio2video.me
 * [ttskch/audio2video](https://github.com/ttskch/audio2video)
