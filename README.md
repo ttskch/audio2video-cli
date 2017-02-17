@@ -1,7 +1,7 @@
 # audio2video-cli
 
-Convert an audio file to a simple color video file.  
-Maybe it's useful for attaching just audio to your **tweet** :wink: (We cannot attach audio file but can do video file.)
+A CLI tool to convert an audio file to a simple video file.  
+Maybe it's useful for attaching just audio to your tweet. (We cannot attach audio file but can do video file.)
 
 ## Requirements
 
@@ -12,11 +12,12 @@ Maybe it's useful for attaching just audio to your **tweet** :wink: (We cannot a
 
 ```sh
 # e.g. for Mac.
+$ brew tap homebrew/php
 $ brew install ffmpeg --with-tools
-$ brew install imagemagick php54-imagick
+$ brew install php71 imagemagick php71-imagick
 
 # e.g. for Ubuntu 16.04.
-$ apt-get install -y ffmpeg libavcodec-extra imagemagick php-imagick
+$ apt-get install -y php ffmpeg libavcodec-extra imagemagick php-imagick
 ```
 
 ## Installation
@@ -33,18 +34,18 @@ $ ln -s $(pwd)/audio2video /usr/local/bin/
 ```
 $ audio2video conv --help
 Usage:
-  conv [options] [--] <audio-file>
+  conv [options] [--] <audio-file> [<output-format>]
 
 Arguments:
   audio-file                               path to audio file
+  output-format                            extension of output video file [default: "mp4"]
 
 Options:
-  -o, --output-format=OUTPUT-FORMAT        defaults to "mp4"
   -i, --image-file=IMAGE-FILE              path to image file
-  -c, --image-color=IMAGE-COLOR            if "--image_file" isn't set, you can specify the color of auto-generated simple color image. defaults to "black"
-  -r, --image-resolution=IMAGE-RESOLUTION  if "--image_file" isn't set, you can specify the resolution of auto-generated simple color image. defaults to "800x450"
-  -f, --frame-rate=FRAME-RATE              defaults to 30
-  -w, --overwrite                          if you set this flag, existing video file which has output target filename will be overwritten
+  -c, --image-color=IMAGE-COLOR            if "--image_file" isn't set, you can specify the color of auto-generated simple color image [default: "black"]
+  -r, --image-resolution=IMAGE-RESOLUTION  if "--image_file" isn't set, you can specify the resolution of auto-generated simple color image [default: "800x450"]
+  -f, --video-frame-rate=VIDEO-FRAME-RATE  frame rate of output video file [default: "30"]
+  -w, --overwrite                          if this flag is set, existing same named video file will be overwritten
   -h, --help                               Display this help message
   -q, --quiet                              Do not output any message
   -V, --version                            Display this application version
@@ -54,23 +55,23 @@ Options:
   -v|vv|vvv, --verbose                     Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 
 Help:
- Convert audio file to simple video file
+  Convert audio file to simple video file
 ```
 
 ### Examples
 
 ```sh
 $ audio2video conv sample.mp3
-$ audio2video conv sample.mp3 -o avi
-$ audio2video conv sample.mp3 -o avi -i sample.png
-$ audio2video conv sample.mp3 -o m4v -c white
-$ audio2video conv sample.mp3 -o m4v -c "#123456" -r 1600x900
-$ audio2video conv sample.mp3 -o m4v -c white -r 1600x900 -f 15
+$ audio2video conv sample.mp3 avi
+$ audio2video conv sample.mp3 avi -i sample.png
+$ audio2video conv sample.mp3 m4v -c white
+$ audio2video conv sample.mp3 m4v -c "#123456" -r 1600x900
+$ audio2video conv sample.mp3 m4v -c white -r 1600x900 -f 15
 ```
 
 For example, when you input a mp3 file like below:
 
-![image](https://cloud.githubusercontent.com/assets/4360663/16361302/6cd60b90-3bc6-11e6-8b16-950d76991ed4.png)
+![](https://cloud.githubusercontent.com/assets/4360663/16361302/6cd60b90-3bc6-11e6-8b16-950d76991ed4.png)
 
 And exec command below:
 
@@ -81,7 +82,7 @@ $ audio2video conv sample.mp3
 
 Then you get mp4 file like below:
 
-![image](https://cloud.githubusercontent.com/assets/4360663/16361272/71a89288-3bc5-11e6-89fa-ebf0c46bdc54.png)
+![](https://cloud.githubusercontent.com/assets/4360663/16361272/71a89288-3bc5-11e6-89fa-ebf0c46bdc54.png)
 
 ## See also
 

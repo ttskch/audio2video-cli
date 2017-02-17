@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class MyCommand extends Command
+class ConvCommand extends Command
 {
     protected function configure()
     {
@@ -19,26 +19,32 @@ class MyCommand extends Command
             ->setName('conv')
             ->setDescription('Convert audio file to simple video file')
             ->addArgument('audio-file', InputArgument::REQUIRED, 'path to audio file')
-            ->addOption('output-format', 'o', InputOption::VALUE_REQUIRED, 'defaults to "mp4"')
+            ->addArgument('output-format', InputArgument::OPTIONAL, 'extension of output video file', 'mp4')
             ->addOption('image-file', 'i', InputOption::VALUE_REQUIRED, 'path to image file')
-            ->addOption('image-color', 'c', InputOption::VALUE_REQUIRED, 'if "--image_file" isn\'t set, you can specify the color of auto-generated simple color image. defaults to "black"')
-            ->addOption('image-resolution', 'r', InputOption::VALUE_REQUIRED, 'if "--image_file" isn\'t set, you can specify the resolution of auto-generated simple color image. defaults to "800x450"')
-            ->addOption('frame-rate', 'f', InputOption::VALUE_REQUIRED, 'defaults to 30')
-            ->addOption('overwrite', 'w', InputOption::VALUE_NONE, 'if you set this flag, existing video file which has output target filename will be overwritten')
+            ->addOption('image-color', 'c', InputOption::VALUE_REQUIRED, 'if "--image_file" isn\'t set, you can specify the color of auto-generated simple color image', 'black')
+            ->addOption('image-resolution', 'r', InputOption::VALUE_REQUIRED, 'if "--image_file" isn\'t set, you can specify the resolution of auto-generated simple color image', '800x450')
+            ->addOption('video-frame-rate', 'f', InputOption::VALUE_REQUIRED, 'frame rate of output video file', '30')
+            ->addOption('overwrite', 'w', InputOption::VALUE_NONE, 'if this flag is set, existing same named video file will be overwritten')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $audioFilePath = $input->getArgument('audio-file');
-        $outputFormat = $input->getOption('output-format') ?: 'mp4';
+        $outputFormat = $input->getArgument('output-format');
         $imageFilePath = $input->getOption('image-file');
-        $imageColor = $input->getOption('image-color') ?: 'black';
-        $imageResolution = $input->getOption('image-resolution') ?: '800x450';
-        $frameRate = intval($input->getOption('frame-rate')) ?: 30;
-        $overwrite = boolval($input->getOption('overwrite'));
+        $imageColor = $input->getOption('image-color');
+        $imageResolution = $input->getOption('image-resolution');
+        $videoFrameRate = intval($input->getOption('video-frame-rate'));
 
-        $tmpDirPath = sprintf('%s_%s', sys_get_temp_dir().'/audio2video', preg_replace('/[.\s]/', '', microtime()));
+        $outputFilePath = preg_replace('/([^.]+)$/', $outputFormat, $audioFilePath);
+
+        if (!$input->getOption('overwrite') && file_exists($outputFilePath)) {
+            $output->writeln("<error>{$outputFilePath} already exists.</>");
+            return;
+        }
+
+        $tmpDirPath = sprintf('%s/audio2video_%s', sys_get_temp_dir(), preg_replace('/[^\d]/', '', microtime()));
         mkdir($tmpDirPath);
 
         // get the duration of the input audio.
@@ -49,35 +55,33 @@ class MyCommand extends Command
         $duration = floatval(json_decode($process->getOutput())->streams[0]->duration);
 
         // get the required number of images.
-        $frameNum = intval(ceil($duration * $frameRate));
+        $frameNum = intval(ceil($duration * $videoFrameRate));
 
-        // place uploaded image or new-created image as origin of copies.
+        // place uploaded image or generated simple image as origin of copies.
         if ($imageFilePath) {
             $imageExt = pathinfo($imageFilePath, PATHINFO_EXTENSION);
-            copy($imageFilePath, $tmpDirPath."/origin.{$imageExt}");
+            copy($imageFilePath, "{$tmpDirPath}/origin.{$imageExt}");
         } else {
-            // create blank image.
+            // generate simple image.
             $image = new \Imagick();
             list($w, $h) = explode('x', $imageResolution);
             $image->newImage($w, $h, $imageColor, 'jpg');
-            $image->writeImage($tmpDirPath.'/origin.jpg');
+            $image->writeImage("{$tmpDirPath}/origin.jpg");
             $imageExt = 'jpg';
         }
 
         // generate sequential numbered images.
         for ($i = 0; $i < $frameNum; $i++) {
-            copy($tmpDirPath."/origin.{$imageExt}", sprintf('%s/%06d.%s', $tmpDirPath, $i, $imageExt));
+            copy("{$tmpDirPath}/origin.{$imageExt}", sprintf('%s/%06d.%s', $tmpDirPath, $i, $imageExt));
         }
 
         // generate video file.
-        $outputFilePath = preg_replace('/([^.]+)$/', $outputFormat, $audioFilePath);
-        $y = $overwrite ? '-y' : '';
-        $process = new Process("ffmpeg {$y} -r {$frameRate} -i '{$tmpDirPath}/%06d.{$imageExt}' -i '{$audioFilePath}' -r 30 -vcodec libx264 -pix_fmt yuv420p '{$outputFilePath}'");
+        $process = new Process("ffmpeg -y -r {$videoFrameRate} -i '{$tmpDirPath}/%06d.{$imageExt}' -i '{$audioFilePath}' -r 30 -vcodec libx264 -pix_fmt yuv420p '{$outputFilePath}'");
         $process->setTimeout(300);
         $process->run();
         $this->ensureSuccessful($process);
 
-        $output->writeln("{$outputFilePath} is generated successfully.");
+        $output->writeln("<info>{$outputFilePath} is generated successfully.</>");
     }
 
     private function ensureSuccessful(Process $process)
@@ -89,5 +93,7 @@ class MyCommand extends Command
 }
 
 $console = new Application();
-$console->add(new MyCommand());
+$console->setName('audio2video');
+$console->setVersion('0.0.1');
+$console->add(new ConvCommand());
 $console->run();
